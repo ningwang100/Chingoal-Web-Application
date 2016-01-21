@@ -1,0 +1,56 @@
+
+.graph__wrapper {
+  width: 270px;
+  margin: 30px auto;
+  position: relative;
+}
+.graph__wrapper svg {
+  position: absolute;
+  margin: 36px 0px 0px 15px;
+}
+.coordinates {
+  position: absolute;
+  counter-reset: line 18;
+}
+.coordinates span {
+  display: inline-block;
+  border-bottom: 1px solid #3a3a3a;
+  height: 20px;
+  width: 270px;
+}
+.coordinates span:before {
+  counter-increment: line -3;
+  content: counter(line);
+  display: inline-block;
+  color: #4a4a4a;
+  margin: 10px 0px 0px -15px;
+}
+.path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  -webkit-animation: dash 3s ease-in forwards;
+  animation: dash 3s ease-in forwards;
+  -webkit-animation-iteration-count: 2;
+  animation-iteration-count: 2;
+  -webkit-animation-delay: 1s;
+  animation-delay: 1s;
+}
+@-webkit-keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.description {
+  color:#A90508;
+  text-align: center;
+  margin: 20px 0px;
+}
+.description > p {
+font-family: "Roboto";
+font-size:20px;	
+}

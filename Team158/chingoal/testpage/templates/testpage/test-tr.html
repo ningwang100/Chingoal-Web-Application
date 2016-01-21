@@ -1,0 +1,24 @@
+<div class="form-group">
+{% if finish == 0 %}
+    <div class="row">
+        <div class="col-lg-12">{{item.question}}</div>
+    </div>
+    <br>
+    <label>Input the answer content</label>
+    <!-- <input class="form-control" id="id_explanation" maxlength="200" name="explanation" placeholder="Explanation" type="text"> -->
+    <div class="row">
+        {% if form.answer.errors %}
+            <div class="col-lg-8">{{form.answer}}</div>
+            <div class="col-lg-4" style="color:red">{{form.answer.errors}}</div>
+        {% else %}
+            <div class="col-lg-12">{{form.answer}}</div>
+        {% endif %}
+        
+
+    </div>
+{% endif %}
+        {{form.max_entry}}
+        {{form.qnum}}
+        {{form.qid}}
+        <input id="testlevel" type="hidden" name="level" value="{{level}}">            
+</div>            

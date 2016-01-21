@@ -1,0 +1,11 @@
+mysql -u root -p (your password)
+
+CREATE DATABASE chingoal CHARACTER SET UTF8;
+
+CREATE USER user@localhost IDENTIFIED BY '12345';
+
+GRANT ALL PRIVILEGES ON chingoal.* TO user@localhost;
+
+FLUSH PRIVILEGES;
+
+EXIT;

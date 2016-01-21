@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+
+
+    {% block title-content %}
+    <title>Chingoal_profile</title>
+
+  {% endblock %}
+
+    {% block head %}
+    {% load static %}
+    <link href="{% static "css/custom_view_profile.css"%}" rel="stylesheet">
+     <link rel="stylesheet" href="{% static "css/normalize.css"%}">
+
+    <link rel="stylesheet" href="{% static "css/style.css"%}" media="screen" type="text/css" />
+    
+    {% endblock %}
+    {% block head-origin %}
+    {% endblock %}
+
+    {% block main-content %}
+  
+  <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Chingoal</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{% url 'dashboard'%}">Lessons</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{% url 'discussion_home' %}">Discussion</a>
+                    </li>
+                    <li>
+                    {% if isLearner == 'yes' %}
+                        <a class="page-scroll" href="{% url 'store' %}">Store</a>                       
+                    {% else %}
+                        <a href="{% url 'testcreate' %}">Create Test</a>
+                    {% endif %}
+                    </li>
+
+<li class="dropdown">
+    {% if hasnewmsg == 'no' %}
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="msgbar">
+    {% else %}
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="msgbar" style="color:red">
+    {% endif %}
+        <i class="fa fa-envelope fa-fw" ></i><i id="newmsg">{{msgcount}}</i><i class="fa fa-caret-down"></i>
+    </a>
+    <ul id="msglist" class="dropdown-menu dropdown-user">
+        {% for msg in newmsgs %}
+        <li>{% if msg.isReply %}<a data-toggle="modal" data-target="#reply_box{{ msg.id }}">
+            {% else %}<a data-toggle="modal" data-target="#reply_box{{ msg.id }}" style="color:red;">
+                {% endif %}
+                <i class="fa fa-comment fa-fw"></i>{{msg.sender}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</li>
+
+                    <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                             <i class="fa fa-user fa-fw"></i><i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="{% url 'viewProfile' cur_username %}"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="{% url 'editProfile' %}"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                    </li> 
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+	<a name="page-top" style="color:white">top</a>
+    <div style=" margin-top:100px;">
+        <div class="card hovercard" >
+            <div class="card-background" style="height: 160px">
+                <img class="card-bkimg" alt="" src="{% static "img/profile_bg.jpg"%}">
+                <!-- http://lorempixel.com/850/280/people/9/ -->
+            </div>
+            <div class="useravatar">
+                <img alt="" src="{{cur_user.photo.url}}">
+                
+            </div>
+            <div class="follower">
+                {% if cur_username != username %}
+                    <a href="{% url 'follow' username isFollowing isLearner %}">
+                    <button type="button" class="btn btn-primary btn-xs "> 
+                    <span class="glyphicon glyphicon-plus"> </span> 
+    
+                {% if isFollowing == 'yes' %} Unfollow {% else %} Follow {% endif %}</button></a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="btn-pref btn-group btn-group-justified btn-group-lg tab-title" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+               <a href="#tab1"><button type="button" id="stars" class="btn btn-primary tab-timeline"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    <span class="hidden-xs">Profile</span>
+                </button></a>
+            </div>
+            <div class="btn-group" role="group">
+                <a href="#tab2"><button type="button" id="favorites" class="btn btn-default tab-timeline"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+                    <span>Timeline</span>
+                </button></a>
+            </div>
+            <div class="btn-group" role="group">
+                <a href="#tab3"><button type="button" id="following" class="btn btn-default tab-timeline" ><span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    <span class="hidden-xs">Friends</span>
+                </button></a>
+            </div>
+        </div>
+    </div>
+    
+    <a name="tab1" style="color:white">tab1</a>
+    <div class="set-bottom">
+    	<div class="row">
+    	<div class="col-lg-7 personal text-center">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                           Personal Information
+                        </div>
+                        <div class="panel-body">
+                            <span>Username:{{ username }} <br/>
+                                {% if isLearner == 'yes' %}
+                                Title: {{ cur_user.title}}<br/>
+                                Achievement: {{ cur_user.lesson_plan}}<br/>                            
+                                Schedule: Learn level {{cur_user.progress_level}}
+                                		  lesson {{cur_user.progress_lesson}} today
+                                         {% if username == cur_username %}
+                                         <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">Edit</button>
+                        				 {% endif %}               
+                                         <br/>
+                                {% endif %}
+                                Self-Bio: {{cur_user.bio}}
+                                 
+                            </span>
+                        </div>
+                    </div>
+                  </div>   
+    		</div>
+    </div>
+  
+    <div class="rightRoll">
+    
+     <div class="message_box">
+     {% if cur_username != username %}
+     <img src="{% static "img/bg2.jpg"%}" style="height:80px; width:350px;" alt=""><a href="#page-top" class="go-top"><span class="glyphicon glyphicon-arrow-up"></span>Back to top</a>
+     <div class="window_bg">
+    	<p class=" text-center">Leave your message:</p>
+			<form method="POST" action="{% url 'send' username username %}">
+        		<span>
+        			<textarea id="textarea1" name="textarea1" required placeholder="leave your message here..."></textarea>
+        		</span>
+                    <input class="button1" type="submit" value="Leave Message" >
+					
+            {% csrf_token %}
+      		</form> 
+        </div>
+      {% else %}
+      {% if isLearner == 'yes' %}
+            <div class="description">
+	<p>Lessons Learning Chart</p>
+</div>
+
+<div class="graph__wrapper">
+  <div class="coordinates">
+  	<span></span>
+  	<span></span>
+  	<span></span>
+  	<span></span>
+  	<span></span>
+  	<span></span> 
+  </div>
+    <svg width="300px" height="107px" viewBox="0 0 300 107" version="1.1">
+      <defs>
+          <linearGradient x1="0%" y1="100%" x2="100%" y2="100%" id="linearGradient-1">
+              <stop stop-color="#BA0003" offset="0%"></stop>
+              <stop stop-color="#FF9696" offset="41.7610013%"></stop>
+              <stop stop-color="#CE4E00" offset="78.6870217%"></stop>
+              <stop stop-color="#FEDF7F" offset="100%"></stop>
+          </linearGradient>
+      </defs>
+      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+          <path d="M2,{{points.1}} L40,{{points.2}} L80,{{points.3}} L120,{{points.4}} L160,{{points.5}} L200,{{points.6}}" id="Path-1" stroke="url(#linearGradient-1)" stroke-width="4" sketch:type="MSShapeGroup" class="path"></path>
+      </g>
+  </svg>
+</div>
+<a href="{% url 'dashboard'%}" style="color:#A90508;"><input class="button1" type="button" value="Start Learning" style="margin-top:180px;"></a>
+	  {% endif %}
+      	  
+         {% endif %}    
+        </div>
+       
+      </div>
+     <a name="tab3" style="color:white">tab3</a>
+      <div class="set-bottom text-center">
+        <div class="row"> 
+            <div class="col-lg-3">
+                    <div  class="div2"> <span id="title1">My Follower</span><br/>
+                    {% for follower in followers %}
+                        <div class="list">
+                        <ul class="faceul3">
+                            <li> <a  href="{% url 'viewProfile' follower.user.username %}"><img src="{{ follower.photo.url }}" alt="no image"></a>
+                        <a href="{% url 'viewProfile' follower.user.username %}" id="username">{{follower.user.username}}</a> </li>
+                        </ul>
+                        </div>
+                        {% endfor %} </div>
+              </div>
+          <div class="col-lg-3">
+            <div class="div2"> <span id="title2">Recommend Friend</span><br/>
+                {% for unfollower in unfollowers %}
+                <div class="list">
+                <ul class="faceul3">
+                    <li> <img src="{{ unfollower.photo.url }}" alt="no image" onclick="location.href={% url 'viewProfile' unfollower.user.username %}">
+                <a href="{% url 'viewProfile' unfollower.user.username %}" id="username1">{{unfollower.user.username}}</a> </li>
+                </ul>
+                </div>
+                {% endfor %} 
+             </div> 
+           </div>
+        </div>
+    </div>    
+    <a name="tab2" style="color:white">tab2</a>
+<div class="set-bottom">
+    		 <div class="row"> 
+                <div class="col-lg-6">
+                    <ul class="timeline">
+<!--                        <li>-->
+<!--                            <div class="timeline-image">-->
+<!--                                <img class="img-circle img-responsive" src="{% static "img/about/1.jpg"%}" alt="">-->
+<!--                            </div>-->
+<!--                            <div class="timeline-panel">-->
+<!--                                <div class="timeline-heading">-->
+<!--                                    <h4>{{ cur_user.title}}</h4>-->
+<!--                                    <h4 class="subheading">{{ username }}</h4>-->
+<!--                                </div>-->
+<!--                                <div class="timeline-body">-->
+<!--                                    <p class="text-muted">{{history.content}}</p>-->
+<!--                                    <p class="text-muted">{{history.timestamp}}</p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </li>-->
+                    {% for history in historys %}
+                        <li class="timeline-inverted">
+                            <div class="timeline-image">
+                                <img class="img-circle img-responsive" src="{{cur_user.photo.url}}" alt="">
+                            </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4>{{ cur_user.title}}</h4>
+                                    <h4 class="subheading">{{ username }}</h4>
+                                </div>
+                                <div class="timeline-body">
+                                    <p class="text-muted">{{history.content}}</p>
+                                    <p class="text-muted">{{history.timestamp}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+             </div>
+        </div>
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <span class="copyright">Copyright &copy; Your Website 2015</span>
+            </div>
+            <div class="col-md-4">
+                <ul class="list-inline social-buttons">
+                    <li><a href="http://www.twitter.com"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li><a href="http://www.facebook.com"><i class="fa fa-facebook"></i></a>
+                    </li>
+                    <li><a href="http://www.linkedin.com"><i class="fa fa-linkedin"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <ul class="list-inline quicklinks">
+                    <li><a href="#">Privacy Policy</a>
+                    </li>
+                    <li><a href="#">Terms of Use</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+        {% endblock %}
+ 
+
+    {% block origin-script %}
+    {% endblock %}
+
+
+{% block script-content %}
+    <script src="{% static "js/view_profile.js"%}"></script>    
+{% endblock %}
+
+{% block model-define %}
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color:#FFD000;">×</button>
+                 <h4>Edit your schedule</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form role="form" action="{% url 'editSchedule' %}" method="post">
+                                                    <div class="form-group">
+                                                        <!-- <label>Text area</label> -->
+                                                        {% for field in scheduleForm.visible_fields %}
+                                                            {{field.label_tag}} {{field}}
+                                                            <br>
+                                                        {% endfor %}    
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                                    {% csrf_token %}
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+ <div id="reply_box_list">                               
+    {% for msg in newmsgs %}
+<div class="modal fade" id="reply_box{{ msg.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                 							  <h4>From: {{msg.sender}}</h4>
+                                           </div>
+                                           <div class="modal-body">
+                                    <p>{{msg.timestamp}}</p>
+									<p>{{msg.text}}</p>
+									<form role="form" action="{% url 'reply' msg.sender cur_username msg.id %}" method="post">
+                                        <input type="text" name="textarea1" style="width : 300px;" required>
+                                        <button type="submit" class="btn btn-primary btn-sm">Reply</button>
+                                        <a href={% url 'dismiss' msg.id %} class="btn btn-primary btn-sm">Dismiss</a>
+                                       {% csrf_token %}
+                                    </form>
+                                    		</div>
+                                        </div>
+                                    </div>
+                                </div> 
+        {% endfor %}
+    </div>                              
+{% endblock %}

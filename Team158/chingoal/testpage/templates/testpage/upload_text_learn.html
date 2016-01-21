@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Text Learn</title>
+</head>
+<body>
+    <h2>Upload Text Learn</h2>
+    <form enctype="multipart/form-data" action="{% url 'uploadtextlearn' %}" method="post">
+        {% for field in form.visible_fields %}        
+        <p><span>{{field.label_tag}}</span></p>
+        <p>{{field}}</p>                
+        {% endfor %}
+        <p>
+            <input type="submit" value="Submit">
+        </p>
+        {% csrf_token %}
+    </form>
+</body>
+</html>

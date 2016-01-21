@@ -1,0 +1,7 @@
+{
+	"html":"{{item|safe}}",
+	"id":{{id}},
+	"flag":{{flag}},
+	"qnum":{{qnum}},
+	"max_entry":{{max}}	
+}

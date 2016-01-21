@@ -1,0 +1,220 @@
+/* USER PROFILE PAGE */
+body
+{
+    font-family: 'Open Sans', sans-serif;
+	height:100%;
+}
+.card {
+	position:relative;
+    margin-top: 0px;
+    padding: 30px;
+    background-color: rgba(214, 224, 226, 0.2);
+    -webkit-border-top-left-radius:5px;
+    -moz-border-top-left-radius:5px;
+    border-top-left-radius:5px;
+    -webkit-border-top-right-radius:5px;
+    -moz-border-top-right-radius:5px;
+    border-top-right-radius:5px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+	width:100%;
+}
+.card.hovercard {
+    position: relative;
+	left:25px;
+	top:-30px;
+    padding-top: 0;
+    overflow: hidden;
+    text-align: center;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
+	width:96%;
+	height:170px;
+}
+.card.hovercard .card-background {
+    height:70px;	
+}
+.card-background img {
+    -webkit-filter: blur(25px);
+    -moz-filter: blur(25px);
+    -o-filter: blur(25px);
+    -ms-filter: blur(25px);
+    filter: blur(25px);
+    margin-left: -100px;
+    margin-top: -200px;
+    min-width: 130%;
+}
+.card.hovercard .useravatar {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+}
+.card.hovercard .useravatar img {
+    width: 100px;
+    height: 100px;
+    max-width: 100px;
+    max-height: 100px;
+	margin-top:30px;
+	padding-bottom:0px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.5);
+}
+.card.hovercard .card-info {
+    position: absolute;
+    bottom: 14px;
+    left: 0;
+    right: 0;
+}
+.card.hovercard .card-info .card-title {
+    padding:0 5px;
+    font-size: 20px;
+    line-height: 1;
+    color: #262626;
+    background-color: rgba(255, 255, 255, 0.1);
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+.card.hovercard .card-info {
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 20px;
+    color: #737373;
+    text-overflow: ellipsis;
+}
+.card.hovercard .bottom {
+    padding: 0 20px;  
+	
+}
+.btn-pref .btn {
+    -webkit-border-radius:0 !important;
+	
+}
+.tab-title {
+	width:96%;
+	margin-left:25px;
+	margin-top:-30px;
+	
+	}
+.set-bottom { 
+	 position:relative;
+	 z-index:0;
+	 left: 10px;
+	 top:30px;
+	 padding-top:50px;
+	}
+.follower{
+	position:relative;
+	left:200px;
+	top:-90px;
+	height:20px;
+	}	
+.tab-timeline{
+	padding-top:0px;
+	height:35px;
+	}
+#textarea1{
+	margin:20px 50px 0 10px;
+	width:95.5%;
+	height:150px;
+	border:2px solid rgba(0,0,0,1.00);
+	resize:none;
+}
+.button1{
+	border:1px black solid;
+	background-color: #ffffff;
+	border-radius:15px;
+	opacity:0.6;
+	float:right;
+	margin:10px 25px 10px 0px;
+	position:relative;
+	top:10px;
+	left:-100px;
+	font-size:15px;
+	font-weight:bold;
+	}
+.hint{
+	position:relative;
+	width:150px;
+	left:260px;
+	top:-40px;
+	font-size:12px;
+	color:rgba(134,134,134,1.00);
+	}
+.personal{
+	positive:relative;
+	top:-30px;
+	left:30px;
+	padding:0px;
+	}
+.rightRoll{ 
+	z-index:999;
+	right:50px; 
+	width:400px; 
+	height:300px; 
+	border-radius:15px;
+	display:block;
+	position:fixed; 
+	top:345px;
+}
+.div2{
+	border:1px solid black;
+	margin-left:80px;
+	margin-right:30px;
+	padding:0px;
+	float:left;
+	width:100%;
+	}
+.message_box{
+	right:40px; 
+	width:350px; 
+	height:330px; 
+	border-radius:15px;
+	display:block;
+	position:fixed; 
+	top:315px; 
+	
+	}
+.go-top {
+	color:grey;
+	float:right;
+}
+.text-center {
+	margin-bottom:-20px;
+}
+.modal-header {
+	height: 70px;
+	background-color:black;
+	color: #fed136;
+}
+#myModal {
+	margin-top: 200px;
+}
+#reply_box {
+	margin-top: 200px;
+}
+.window_bg{
+	background:url(/static/img/bg1.jpg);
+	height:250px; 
+}
+.faceul3 li{
+    width:30%;
+    height:85px;
+	position:relative;
+	float:left;
+	left:-15px;
+	bottom:4px;
+	margin-bottom:5px;
+	margin-right:8px;
+    text-align:center;
+	
+	list-style-type: none;
+}
+.faceul3 img{
+    width:80px;
+    height:70px;
+}

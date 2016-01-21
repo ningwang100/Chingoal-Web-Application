@@ -1,0 +1,10 @@
+{
+    "current_level":"{{learning_material.level}}",
+    "current_lesson":"{{learning_material.lesson}}",
+    "current_chapter":"{{learning_material.chapter}}",
+    "learn_type":"{{learning_material.ltype}}",
+    "current_username":"{{cur_user.user.username}}",
+    "current_userLevel":"{{cur_user.curr_level}}",
+    "current_userLesson":"{{cur_user.curr_lesson}}",
+    "html":"{% spaceless %}{{learning_material.audio_html|safe}}{% endspaceless %}"
+}

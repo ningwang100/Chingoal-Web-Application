@@ -1,0 +1,7 @@
+{
+    "id": "{{reply.id}}",
+    "post_time": "{{reply.post_time}}",
+    "post_id": "{{reply.reply_to.id}}",
+    "user_photo_url":"{{user.photo.url}}",
+    "html": "{% spaceless %}{{reply.html|safe}}{% endspaceless %}"
+}

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+
+    {% block title-content %}
+    <title>Chingoal_Registration</title>
+    {% endblock %}
+
+    {% block head %}
+    {% load static %}
+    <link href="{% static "css/custom_register.css"%}" rel="stylesheet">
+    {% endblock %}
+    {% block head-other %}
+    {% endblock %}
+
+    {% block main-content %}
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Chingoal</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#portfolio">Lessons</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#discussions">Discussion</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#store">Store</a>
+                    </li>
+                    <!-- <li>
+                        <a class="page-scroll" href="#account">Account</a>
+                    </li> -->
+                    <li>
+                        <a class="page-scroll" href="/">About Us</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="intro-text">
+                {% if messages %}
+                <ul class="messages" style="background-color:#5cb85c; width:550px; margin-left:320px; height:30px;border-radius:10px;font-size:17px;">
+                {% for message in messages %}
+					<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% for error in register_form.non_field_errors %}
+                        {{error}} <br>
+                        <br>
+                        {% endfor %}
+                        {% if judge == '1'%}
+                            {{hint}}
+                        {% endif %}
+                        <form role="form" action="{% url 'register' parameter %}" method="post" id="registration_form">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label>Indentification Choose</label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="option1" checked>Learner
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="option2">Teacher
+                                    </label>
+                                </div>
+                                {% for field in register_form.visible_fields %}
+                                <div class="form-group">
+                                    <!-- <td>{{field.label_tag}}</td> -->
+                                    <td>{{field}}</td>
+                                    {% for error in field.errors %}
+                                    <td id="error">{{error}} </td>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                                
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="remember" type="checkbox" value="Agreement">Agreement Items
+                                    </label>
+                                    <label>
+                                        <a href="{% url 'login' %}">Login</a>
+                                    </label>
+                                </div>
+                                {% csrf_token %}
+                                <!-- Change this to a button or input when using this as a form -->
+                                <button class="btn btn-lg btn-success btn-block" type="submit">Create account</a>
+                            </fieldset>
+                        </form>
+                <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+                </fb:login-button>
+
+            </div>
+        </div>
+    </header>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="copyright">Copyright &copy; Your Website 2014</span>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline social-buttons">
+                        <li><a href="#"><i class="fa fa-twitter"></i></a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-facebook"></i></a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline quicklinks">
+                        <li><a href="#">Privacy Policy</a>
+                        </li>
+                        <li><a href="#">Terms of Use</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
+
+    {% block other-script %}
+    <script src="/static/js/fbAuthentication.js" type="text/javascript"></script>
+    {% endblock %}
+  

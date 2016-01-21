@@ -1,0 +1,39 @@
+.btn-circle {
+    width: 140px;
+    height: 140px;
+    padding: 10px 16px;
+	margin-right:40px;
+    border-radius: 70px;
+    font-size: 18px;
+    line-height: 1.33;
+}
+.title_img{
+    width: 180px;
+    height: 180px; 
+	/*margin-top:30px;*/
+}
+.header{
+  line-height: 40px;
+  font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-style: italic;
+  text-transform: none;
+  font-weight: 400;
+}
+.header1{
+  ssfont-size: 16px;
+  font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-transform: none;
+  font-style: italic;
+  font-weight: 400;
+}
+.vm{
+	position:relative;
+	top:-50px;
+	left:320px;
+	bottom:0px;
+	padding-top:0px;
+	}
+.team-member {
+	margin-top:30px;
+	margin-bottom:0px;
+}

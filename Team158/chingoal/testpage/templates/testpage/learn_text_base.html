@@ -1,0 +1,42 @@
+<h4>Select Translation for <em>{{learning_material.text}}</em></h4>
+<div class='row'>
+    <div class='col-lg-4'>
+        <img src='{% url 'getlearnphoto' learning_material.level learning_material.lesson learning_material.chapter 'a' %}' class='img-responsive img-circle img-learn'>
+    </div>
+    <div class='col-lg-4'>
+        <img src='{% url 'getlearnphoto' learning_material.level learning_material.lesson learning_material.chapter 'b' %}' class='img-responsive img-circle img-learn'>
+    </div>
+    <div class='col-lg-4'>
+        <img src='{% url 'getlearnphoto' learning_material.level learning_material.lesson learning_material.chapter 'c' %}' class='img-responsive img-circle img-learn'>
+    </div>
+</div>
+<div class='row'>
+    <div class='form-group'>
+        <div class='col-lg-1'></div>
+        <div class='col-lg-3'>        
+            <label class='radio-inline'>
+                <input type='radio' name='optionsRadiosInline' id='optionsRadiosInline1' value='a' ><em>A.{{learning_material.a}}</em>
+            </label>
+        </div>
+        <div class='col-lg-1'></div>
+        <div class='col-lg-3'>
+            <label class='radio-inline'>
+                <input type='radio' name='optionsRadiosInline' id='optionsRadiosInline1' value='b' ><em>B.{{learning_material.b}}</em>
+            </label>
+        </div>
+        <div class='col-lg-1'></div>
+        <div class='col-lg-3'>
+            <label class='radio-inline'>
+                <input type='radio' name='optionsRadiosInline' id='optionsRadiosInline1' value='c' ><em>C.{{learning_material.c}}</em>
+            </label>
+        </div>              
+    </div>
+</div>
+<div hidden id='hidden_username'>{{cur_user.user.username}}</div>
+<div hidden id='hidden_user_level'>{{cur_user.current_level}}</div>
+<div hidden id='hidden_user_lesson'>{{cur_user.current_lesson}}</div>
+<div hidden id='hidden_curr_level'>{{learning_material.level}}</div>
+<div hidden id='hidden_curr_lesson'>{{learning_material.lesson}}</div>
+<div hidden id='hidden_answer'>{{learning_material.answer}}</div>
+<div hidden id='hidden_curr_chapter'>{{learning_material.chapter}}</div>
+<div hidden id='hidden_text'>{{learning_material.text}}</div>

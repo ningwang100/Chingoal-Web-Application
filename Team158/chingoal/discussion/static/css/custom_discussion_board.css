@@ -1,0 +1,58 @@
+#profile_img{
+    width: 100px;
+    height: 100px;    
+    margin: auto;
+}
+
+#reply_user_profile_img {
+    width: 50px;
+    height: 50px;
+}
+
+
+.modal-dialog {
+    /*margin-top: 300px;*/
+}
+
+.reply_row {
+    padding-top: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.delete-btn {
+    margin-top: 15px;
+}
+.post_btn{
+    position:relative;
+    left:-350px;
+    top:20px;
+}
+.bt1 {
+    position:relative;
+	left:-50px;
+    top:-25px;
+}
+.bt2 {
+    position:relative;
+    left:340px;
+    top:-70px;
+}
+.bt3{
+    position:relative;
+    top:-40px;
+    left:20px;
+    margin-right: 10px;
+.table {
+    width: 80%;
+    max-width: 80%;
+    margin-left: 130px;
+    margin-top: 20px;
+}
+.text-center {
+    height:120px;
+}
+.col-lg-2{
+    height:100px;
+}

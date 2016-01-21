@@ -1,0 +1,38 @@
+{% if finish == 0 %}
+<div class="form-group">{{item.question}}</div>
+<div class="form-group input-group">
+    <span class="input-group-addon">A</span>
+    {{item.a}}
+</div>
+<div class="form-group input-group">
+    <span class="input-group-addon">B</span>
+    {{item.b}}
+</div>
+<div class="form-group input-group">
+    <span class="input-group-addon">C</span>
+    {{item.c}}
+</div>
+<div class="form-group input-group">
+    <span class="input-group-addon">D</span>
+    {{item.d}}
+</div>
+<label>Chooseing the correct answer</label>
+<label class="radio-inline">
+<input type="radio" name="answer" id="optionsRadiosInline1" value="A" >A
+</label>
+<label class="radio-inline">
+<input type="radio" name="answer" id="optionsRadiosInline2" value="B">B
+</label>
+<label class="radio-inline">
+<input type="radio" name="answer" id="optionsRadiosInline3" value="C">C
+</label>
+<label class="radio-inline">
+<input type="radio" name="answer" id="optionsRadiosInline3" value="D">D
+</label>
+<br>
+<div style="color:red">{{form.answer.errors}}</div>
+{% endif %}
+{{form.max_entry}}
+{{form.qnum}}
+{{form.qid}}
+<input id="testlevel" type="hidden" name="level" value="{{level}}">            

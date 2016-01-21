@@ -1,0 +1,1236 @@
+{% extends "base.html" %}
+
+
+{% block title-content %}
+<title>Chingoal_Dashboard</title>
+{% endblock %}
+
+{% block head %}
+{% load static %}
+<link href="{% static "css/custom_dashboard.css"%}" rel="stylesheet">
+    {% endblock %}
+    {% block head-origin %}
+    <!-- <link href="{% static "css/agency.css"%}" rel="stylesheet"> -->
+    {% endblock %}
+    
+    {% block main-content %}
+    {% load static %}
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Chingoal</a>
+            </div>
+            
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right"  id="menu">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#">Lessons</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{% url 'discussion_home' %}">Discussion</a>
+                    </li>
+                    {% if flag == 1 %}
+                    <li><a href="{% url 'testcreate' %}">Create Test</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a class="page-scroll" href="{% url 'store' %}">Store</a>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="dropdown">
+                        {% if hasnewmsg == 'no' %}
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="msgbar">
+                            {% else %}
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="msgbar" style="color:red">
+                                {% endif %}
+                            <i class="fa fa-envelope fa-fw"></i><i id="newmsg">{{msgcount}}</i><i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul id="msglist" class="dropdown-menu dropdown-user">
+                            {% for msg in newmsgs %}
+                            <li>{% if msg.isReply %}<a data-toggle="modal" data-target="#reply_box{{ msg.id }}">
+                                {% else %}<a data-toggle="modal" data-target="#reply_box{{ msg.id }}" style="color:red;">
+                                    {% endif %}
+                                    <i class="fa fa-comment fa-fw"></i>{{msg.sender}}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="{% url 'viewProfile' username %}"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            </li>
+                            <li><a href="{% url 'editProfile' %}"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-user -->
+                    </li>
+                    
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    
+    
+    <!-- Portfolio Grid Section -->
+    <section id="portfolio" class="bg-light-gray">
+        <div class="container" id="container" style="z-index:0;">
+
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Lessons</h2>
+                    <h3 class="section-subheading text-muted">We have six levels, where you can improve your chinese skills step by step.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                </div>
+                <div class="col-lg-2 text-center">
+                    <a  href="{% url 'viewProfile' username %}"><img src="{{cur_user.photo.url}}" class="img-responsive img-circle"  alt="" id="profile_img"></a>
+                </div>
+                
+                <div class="col-lg-4 text-center">
+                    <h3>
+                        {{username}}
+                    </h3>
+                    {% if flag == 0 %}
+                    <h4 class="text-muted">{{cur_user.title}}</h4>
+                    {% else %}
+                    <h4 class="text-muted">Teacher</h4>
+                    {% endif %}
+                </div>
+                            <div class="facebook-this">
+    <a href="{{ facebook_url }}" target="_blank">{{link_text}}</a>
+</div>
+
+                <div class="col-lg-4 text-center">
+                    {% if flag == 0 %}
+                    <h3>Achievement</h3>
+                    <i class="fa fa-star fa-2x text-muted" style="color:#fed136;"></i>
+                    {% if cur_user.current_level > 0 %}
+                    <i class="fa fa-star fa-2x text-muted" style="color:#fed136;"></i>
+                    {% else %}
+                    <i class="fa fa-star fa-2x text-muted"></i>
+                    {% endif %}
+                    {% if cur_user.current_level > 1 %}
+                    <i class="fa fa-star fa-2x text-muted" style="color:#F78706;"></i>
+                    {% else %}
+                    <i class="fa fa-star fa-2x text-muted"></i>
+                    {% endif %}
+                    {% if cur_user.current_level > 2 %}
+                    <i class="fa fa-star fa-2x text-muted" style="color:#F78706;"></i>
+                    {% else %}
+                    <i class="fa fa-star fa-2x text-muted"></i>
+                    {% endif %}
+                    {% if cur_user.current_level > 3 %}
+                    <i class="fa fa-star fa-2x text-muted" style="color:#F26002;"></i>
+                    {% else %}
+                    <i class="fa fa-star fa-2x text-muted"></i>
+                    {% endif %}
+                    {% if cur_user.current_level > 4 %}
+                    <i class="fa fa-star fa-2x text-muted" style="color:red;"></i>
+                    {% else %}
+                    <i class="fa fa-star fa-2x text-muted"></i>
+                    {% endif %}
+                    {% else %}
+                    <br>
+                    <a href="{% url 'testcollection' %}"><button class="btn btn-primary btn-lg">My Test</button></a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    {% if cur_user.current_level >= 0 %}
+                    <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        {% else %}
+                        <a class="portfolio-link">
+                            <div class="portfolio-hover">
+                                <div class="portfolio-hover-content">
+                                    <i class="fa fa-lock fa-3x"></i>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <img src="{% static "img/portfolio/1.jpg"%}" class="img-responsive image" alt="">
+                                </a>
+                        <div class="portfolio-caption">
+                            <h4>Level 1</h4>
+                            <p class="text-muted"></p>
+                        </div>
+                        </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    {% if cur_user.current_level >= 1 %}
+                    <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        {% else %}
+                        <a class="portfolio-link">
+                            <div class="portfolio-hover">
+                                <div class="portfolio-hover-content">
+                                    <i class="fa fa-lock fa-3x"></i>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <img src="{% static "img/portfolio/2.jpg"%}" class="img-responsive image" alt="">
+                                </a>
+                        <div class="portfolio-caption">
+                            <h4>Level 2</h4>
+                            <p class="text-muted"></p>
+                        </div>
+                        </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    {% if cur_user.current_level >= 2 %}
+                    <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        {% else %}
+                        <a class="portfolio-link">
+                            <div class="portfolio-hover">
+                                <div class="portfolio-hover-content">
+                                    <i class="fa fa-lock fa-3x"></i>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <img src="{% static "img/portfolio/3.jpg"%}" class="img-responsive image" alt="">
+                                </a>
+                        <div class="portfolio-caption">
+                            <h4>Level 3</h4>
+                            <p class="text-muted"></p>
+                        </div>
+                        </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    {% if cur_user.current_level >= 3 %}
+                    <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        {% else %}
+                        <a class="portfolio-link">
+                            <div class="portfolio-hover">
+                                <div class="portfolio-hover-content">
+                                    <i class="fa fa-lock fa-3x"></i>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <img src="{% static "img/portfolio/4.jpg"%}" class="img-responsive image" alt="">
+                                </a>
+                        <div class="portfolio-caption">
+                            <h4>Level 4</h4>
+                            <p class="text-muted"></p>
+                        </div>
+                        </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
+                        {% if cur_user.current_level >= 4 %}
+                        <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
+                            <div class="portfolio-hover">
+                                <div class="portfolio-hover-content">
+                                    <i class="fa fa-plus fa-3x"></i>
+                                </div>
+                            </div>
+                            {% else %}
+                            <a class="portfolio-link">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content">
+                                        <i class="fa fa-lock fa-3x"></i>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <img src="{% static "img/portfolio/5.jpg"%}" class="img-responsive image" alt="">
+                                    </a>
+                            <div class="portfolio-caption">
+                                <h4>Level 5</h4>
+                                <p class="text-muted"></p>
+                            </div>
+                            </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    {% if cur_user.unlock > 0 %}
+                    <a href="#portfolioModal6" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        {% else %}
+                        <a class="portfolio-link">
+                            <div class="portfolio-hover">
+                                <div class="portfolio-hover-content">
+                                    <i class="fa fa-lock fa-3x"></i>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <img src="{% static "img/portfolio/6.jpg"%}" class="img-responsive image" alt="">
+                                </a>
+                        <div class="portfolio-caption">
+                            <h4>Level 6</h4>
+                            <p class="text-muted"></p>
+                        </div>
+                        </div>
+            </div>
+        </div>
+    </section>
+    
+    
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="copyright">Copyright &copy; Your Website 2014</span>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline social-buttons">
+                        <li><a href="http://www.twitter.com"><i class="fa fa-twitter"></i></a>
+                        </li>
+                        <li><a onclick="postToFB()"><i class="fa fa-facebook"></i></a>
+                        </li>
+                        <li><a href="http://www.linkedin.com"><i class="fa fa-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline quicklinks">
+                        <li><a href="#">Privacy Policy</a>
+                        </li>
+                        <li><a href="#">Terms of Use</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Portfolio Modals -->
+    <!-- Use the modals below to showcase details about your portfolio projects! -->
+    
+    <!-- Portfolio Modal 1 -->
+   <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <!-- Project Details Go Here -->
+                            <div class="row">
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 0 or cur_user.current_lesson >= 1 %}
+                                    <a href="{% url 'getlearn' 0 1 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/roundicons.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 1</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 0 or cur_user.current_lesson >= 2 %}
+                                    <a href="{% url 'getlearn' 0 2 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/startup-framework.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 2</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 0 or cur_user.current_lesson >= 3 %}
+                                    <a href="{% url 'getlearn' 0 3 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/treehouse.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 3</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 0 or cur_user.current_lesson >= 4 %}
+                                    <a href="{% url 'getlearn' 0 4 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/golden.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 4</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    <a href="" class="portfolio-link" data-toggle="modal">
+                                        {% if cur_user.current_level > 0 or cur_user.current_lesson >= 5 %}
+                                        <a href="{% url 'getlearn' 0 5 %}" class="portfolio-link" data-toggle="modal">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-plus fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <a class="portfolio-link">
+                                                <div class="portfolio-hover">
+                                                    <div class="portfolio-hover-content">
+                                                        <i class="fa fa-lock fa-3x"></i>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                <img src="{% static "img/portfolio/escape.png"%}" class="img-responsive" alt="">
+                                                    </a>
+                                            <div class="portfolio-caption">
+                                                <h4>Lesson 5</h4>
+                                                <p class="text-muted"></p>
+                                            </div>
+                                            </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    
+                                </div>
+                            </div>
+                            
+                            <!--  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Portfolio Modal 2 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <!-- Project Details Go Here -->
+                            <div class="row">
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 1 or cur_user.current_lesson >= 1 %}
+                                    <a href="{% url 'getlearn' 1 1 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/roundicons.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 1</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 1 or cur_user.current_lesson >= 2 %}
+                                    <a href="{% url 'getlearn' 1 2 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/startup-framework.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 2</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 1 or cur_user.current_lesson >= 3 %}
+                                    <a href="{% url 'getlearn' 1 3 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/treehouse.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 3</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 1 or cur_user.current_lesson >= 4 %}
+                                    <a href="{% url 'getlearn' 1 4 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/golden.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 4</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    <a href="" class="portfolio-link" data-toggle="modal">
+                                        {% if cur_user.current_level > 1 or cur_user.current_lesson >= 5 %}
+                                        <a href="{% url 'getlearn' 1 5 %}" class="portfolio-link" data-toggle="modal">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-plus fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <a class="portfolio-link">
+                                                <div class="portfolio-hover">
+                                                    <div class="portfolio-hover-content">
+                                                        <i class="fa fa-lock fa-3x"></i>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                <img src="{% static "img/portfolio/escape.png"%}" class="img-responsive" alt="">
+                                                    </a>
+                                            <div class="portfolio-caption">
+                                                <h4>Lesson 5</h4>
+                                                <p class="text-muted"></p>
+                                            </div>
+                                            </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+
+                                        </div>
+                            </div>
+                            
+                            <!--  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Portfolio Modal 3 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <!-- Project Details Go Here -->
+                            <div class="row">
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 2 or cur_user.current_lesson >= 1 %}
+                                    <a href="{% url 'getlearn' 2 1 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/roundicons.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 1</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 2 or cur_user.current_lesson >= 2 %}
+                                    <a href="{% url 'getlearn' 2 2 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/startup-framework.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 2</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 2 or cur_user.current_lesson >= 3 %}
+                                    <a href="{% url 'getlearn' 2 3 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/treehouse.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 3</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 2 or cur_user.current_lesson >= 4 %}
+                                    <a href="{% url 'getlearn' 2 4 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/golden.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 4</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    <a href="" class="portfolio-link" data-toggle="modal">
+                                        {% if cur_user.current_level > 2 or cur_user.current_lesson >= 5 %}
+                                        <a href="{% url 'getlearn' 2 5 %}" class="portfolio-link" data-toggle="modal">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-plus fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <a class="portfolio-link">
+                                                <div class="portfolio-hover">
+                                                    <div class="portfolio-hover-content">
+                                                        <i class="fa fa-lock fa-3x"></i>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                <img src="{% static "img/portfolio/escape.png"%}" class="img-responsive" alt="">
+                                                    </a>
+                                            <div class="portfolio-caption">
+                                                <h4>Lesson 5</h4>
+                                                <p class="text-muted"></p>
+                                            </div>
+                                            </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+
+                                        </div>
+                            </div>
+                            
+                            <!--  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    
+    <!-- Portfolio Modal 4 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <!-- Project Details Go Here -->
+                            <div class="row">
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 3 or cur_user.current_lesson >= 1 %}
+                                    <a href="{% url 'getlearn' 3 1 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/roundicons.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 1</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 3 or cur_user.current_lesson >= 2 %}
+                                    <a href="{% url 'getlearn' 3 2 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/startup-framework.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 2</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 3 or cur_user.current_lesson >= 3 %}
+                                    <a href="{% url 'getlearn' 3 3 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/treehouse.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 3</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 3 or cur_user.current_lesson >= 4 %}
+                                    <a href="{% url 'getlearn' 3 4 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/golden.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 4</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    <a href="" class="portfolio-link" data-toggle="modal">
+                                        {% if cur_user.current_level > 3 or cur_user.current_lesson >= 5 %}
+                                        <a href="{% url 'getlearn' 3 5 %}" class="portfolio-link" data-toggle="modal">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-plus fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <a class="portfolio-link">
+                                                <div class="portfolio-hover">
+                                                    <div class="portfolio-hover-content">
+                                                        <i class="fa fa-lock fa-3x"></i>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                <img src="{% static "img/portfolio/escape.png"%}" class="img-responsive" alt="">
+                                                    </a>
+                                            <div class="portfolio-caption">
+                                                <h4>Lesson 5</h4>
+                                                <p class="text-muted"></p>
+                                            </div>
+                                            </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+
+                                        </div>
+                            </div>
+                            
+                            <!--  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- Portfolio Modal 5 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <!-- Project Details Go Here -->
+                            <div class="row">
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 4 or cur_user.current_lesson >= 1 %}
+                                    <a href="{% url 'getlearn' 4 1 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/roundicons.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 1</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 4 or cur_user.current_lesson >= 2 %}
+                                    <a href="{% url 'getlearn' 4 2 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/startup-framework.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 2</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 4 or cur_user.current_lesson >= 3 %}
+                                    <a href="{% url 'getlearn' 4 3 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/treehouse.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 3</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.current_level > 4 or cur_user.current_lesson >= 4 %}
+                                    <a href="{% url 'getlearn' 4 4 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/golden.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 4</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    <a href="" class="portfolio-link" data-toggle="modal">
+                                        {% if cur_user.current_level > 4 or cur_user.current_lesson >= 5 %}
+                                        <a href="{% url 'getlearn' 4 5 %}" class="portfolio-link" data-toggle="modal">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-plus fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <a class="portfolio-link">
+                                                <div class="portfolio-hover">
+                                                    <div class="portfolio-hover-content">
+                                                        <i class="fa fa-lock fa-3x"></i>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                <img src="{% static "img/portfolio/escape.png"%}" class="img-responsive" alt="">
+                                                    </a>
+                                            <div class="portfolio-caption">
+                                                <h4>Lesson 5</h4>
+                                                <p class="text-muted"></p>
+                                            </div>
+                                            </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+
+                                        </div>
+                            </div>
+                            
+                            <!--  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal 6 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <!-- Project Details Go Here -->
+                            <div class="row">
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.unlock >= 1 %}
+                                    <a href="{% url 'getlearn' 5 1 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/roundicons.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 1</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.unlock >= 2 %}
+                                    <a href="{% url 'getlearn' 5 2 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/startup-framework.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 2</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.unlock >= 3 %}
+                                    <a href="{% url 'getlearn' 5 3 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/treehouse.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 3</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    {% if cur_user.unlock >= 4 %}
+                                    <a href="{% url 'getlearn' 5 4 %}" class="portfolio-link" data-toggle="modal">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-plus fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <a class="portfolio-link">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-lock fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <img src="{% static "img/portfolio/golden.png"%}" class="img-responsive" alt="">
+                                                </a>
+                                        <div class="portfolio-caption">
+                                            <h4>Lesson 4</h4>
+                                            <p class="text-muted"></p>
+                                        </div>
+                                        </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    <a href="" class="portfolio-link" data-toggle="modal">
+                                        {% if cur_user.unlock >= 5 %}
+                                        <a href="{% url 'getlearn' 5 5 %}" class="portfolio-link" data-toggle="modal">
+                                            <div class="portfolio-hover">
+                                                <div class="portfolio-hover-content">
+                                                    <i class="fa fa-plus fa-3x"></i>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <a class="portfolio-link">
+                                                <div class="portfolio-hover">
+                                                    <div class="portfolio-hover-content">
+                                                        <i class="fa fa-lock fa-3x"></i>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                <img src="{% static "img/portfolio/escape.png"%}" class="img-responsive" alt="">
+                                                    </a>
+                                            <div class="portfolio-caption">
+                                                <h4>Lesson 5</h4>
+                                                <p class="text-muted"></p>
+                                            </div>
+                                            </div>
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+
+                                        </div>
+                            </div>
+                            
+                            <!--  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}
+    
+    {% block origin-script %}
+    <script src="/static/js/fbAuthentication.js" type="text/javascript"></script>
+
+    {% endblock %}
+    
+    {% block model-define %}
+    <div id="reply_box_list">
+        {% for msg in newmsgs %}
+        <div class="modal fade" id="reply_box{{ msg.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4>From: {{msg.sender}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{msg.timestamp}}</p>
+                        <p>{{msg.text}}</p>
+                        <form role="form" action="{% url 'reply' msg.sender username msg.id %}" method="post">
+                            <input type="text" name="textarea1" style="width : 300px;" required>
+                                <button type="submit" class="btn btn-primary btn-sm">Reply</button>
+                                <a href={% url 'dismiss' msg.id %} class="btn btn-primary btn-sm">Dismiss</a>
+                                {% csrf_token %}
+                                </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endblock %}
+    
+    

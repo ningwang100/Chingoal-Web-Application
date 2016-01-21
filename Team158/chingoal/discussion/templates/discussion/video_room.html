@@ -1,0 +1,456 @@
+{% extends "base.html" %}
+
+    {% block title-content %}
+    <title>Chingoal-Videoroom</title>
+    {% endblock %}
+    {% block head %}
+    {% load static %}
+    <link href="{% static "css/custom_discussion_board.css"%}" rel="stylesheet">  
+ <link href="{% static "css/video_room.css"%}" rel="stylesheet">
+  {% endblock %}
+    {% block head-origin %}
+    {% endblock %}
+{% block ishout %}
+{% endblock %}    
+    
+{% block main-content %}
+ {% csrf_token %}
+   <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Chingoal</a>
+            </div>
+
+            <!~~ Collect the nav links, forms, and other content for toggling ~~>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{% url 'dashboard' %}">Lessons</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{% url 'discussion_home' %}">Discussion</a>
+                    </li>
+                    {% if flag == 1 %}
+                     <li>
+                           <a href="{% url 'testcreate' %}">Create Test</a>                   
+                    </li>   
+                    {% else %}
+                    
+                    <li>
+                    <a class="page-scroll" href="{% url 'store' %}">Store</a> 
+                        </li>
+                                      
+                    {% endif %}
+			<li class="dropdown">
+ 			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                             <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="{% url 'viewProfile' username %}"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="{% url 'editProfile' %}"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!~~ /.dropdown-user ~~>
+                    </li>   
+                </ul>
+            </div>
+            <!~~ /.navbar-collapse ~~>
+        </div>
+        <!~~ /.container-fluid ~~>
+    </nav>
+
+  <section id="portfolio" class="bg-light-gray">
+   <div >
+    <input type="file" id="fileIpt" class="fileIpt">
+    <button id="sendFileBtn" class="sendFileBtn">Send File</button>
+  </div>
+  <div id="videos">
+    <video id="me" autoplay></video>
+  </div>
+  <div id="files">
+  </div>
+  </section>
+  
+<footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="copyright">Copyright &copy; Your Website 2014</span>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline social-buttons">
+                        <li><a href="http://www.twitter.com"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li><a href="http://www.facebook.com"><i class="fa fa-facebook"></i></a>
+                    </li>
+                    <li><a href="http://www.linkedin.com"><i class="fa fa-linkedin"></i></a>
+                    </li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline quicklinks">
+                        <li><a href="#">Privacy Policy</a>
+                        </li>
+                        <li><a href="#">Terms of Use</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+{%endblock%}
+ {% block script-content %}
+<!-- <script src="/../static/js/jquery-1.11.2.js" type="text/javascript"></script> -->
+{% load static %}
+<script type="text/javascript" src="{% static "js/SkyRTC-client.js"%}"></script>
+<script type="text/javascript">
+  var videos = document.getElementById("videos");
+  var sendBtn = document.getElementById("sendBtn");
+  var msgs = document.getElementById("msgs");
+  var sendFileBtn = document.getElementById("sendFileBtn");
+  var files = document.getElementById("files");
+  var rtc = SkyRTC();
+
+  /**********************************************************/
+
+  sendFileBtn.onclick = function(event){
+    //分享文件
+    rtc.shareFile("fileIpt");
+  };
+  /**********************************************************/
+
+  
+
+  //对方同意接收文件
+  rtc.on("send_file_accepted", function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = "Have Received" + file.name + "File，Waiting Send";
+
+  });
+  //对方拒绝接收文件
+  rtc.on("send_file_refused", function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = "Refused:" + file.name + "File";
+  });
+  //请求发送文件
+  rtc.on('send_file', function(sendId, socketId, file){
+    var p = document.createElement("p");
+    p.innerText = "Sending Request" + file.name + "File";
+    p.id = "sf-" + sendId;
+    files.appendChild(p);
+  });
+  //文件发送成功
+  rtc.on('sended_file', function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.parentNode.removeChild(p);
+  });
+  //发送文件碎片
+  rtc.on('send_file_chunk', function(sendId, socketId, percent, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = file.name + "File is sending: " + Math.ceil(percent) + "%";
+  });
+  //接受文件碎片
+  rtc.on('receive_file_chunk', function(sendId, socketId, fileName, percent){
+    var p = document.getElementById("rf-" + sendId);
+    p.innerText = "Receiving" + fileName + "file：" +  Math.ceil(percent) + "%";
+  });
+  //接收到文件
+  rtc.on('receive_file', function(sendId, socketId, name){
+    var p = document.getElementById("rf-" + sendId);
+    p.parentNode.removeChild(p);
+  });
+  //发送文件时出现错误
+  rtc.on('send_file_error', function(error){
+    console.log(error);
+  });
+  //接收文件时出现错误
+  rtc.on('receive_file_error', function(error){
+    console.log(error);
+  });
+  //接受到文件发送请求
+  rtc.on('receive_file_ask', function(sendId, socketId, fileName, fileSize){
+    var p;
+    if (window.confirm(socketId + "User want to send file to you" + fileName + "file，size" + fileSize + "KB, accept？")) {
+      rtc.sendFileAccept(sendId);
+      p = document.createElement("p");
+      p.innerText = "Ready to receive file" + fileName;
+      p.id = "rf-" + sendId;
+      files.appendChild(p);
+    } else {
+      rtc.sendFileRefuse(sendId);
+    }
+  });
+  //成功创建WebSocket连接
+  rtc.on("connected", function(socket) {
+    //创建本地视频流
+    rtc.createStream({
+      "video": true,
+      "audio": true
+    });
+  });
+  //创建本地视频流成功
+  rtc.on("stream_created", function(stream) {
+    document.getElementById('me').src = URL.createObjectURL(stream);
+    document.getElementById('me').play();
+  });
+  //创建本地视频流失败
+  rtc.on("stream_create_error", function() {
+    alert("create stream failed!");
+  });
+  //接收到其他用户的视频流
+  rtc.on('pc_add_stream', function(stream, socketId) {
+    var newVideo = document.createElement("video"),
+        id = "other-" + socketId;
+    newVideo.setAttribute("class", "other");
+    newVideo.setAttribute("autoplay", "autoplay");
+    newVideo.setAttribute("id", id);
+    videos.appendChild(newVideo);
+    rtc.attachStream(stream, id);
+  });
+  //删除其他用户
+  rtc.on('remove_peer', function(socketId) {
+    var video = document.getElementById('other-' + socketId);
+    if(video){
+      video.parentNode.removeChild(video);
+    }
+  });
+  //接收到文字信息
+  rtc.on('data_channel_message', function(channel, socketId, message){
+    var p = document.createElement("p");
+    p.innerText = socketId + ": " + message;
+    msgs.appendChild(p);
+  });
+  //连接WebSocket服务器
+  // rtc.connect("wss:" + window.location.href.substring(window.location.protocol.length).split('#')[0], window.location.hash.slice(1));
+  rtc.connect("wss://54.164.42.224:3000/", {{rid}});
+
+</script>
+{%endblock%}
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Chingoal-Videoroom</title>
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+
+    #videos {
+      position: absolute;
+      left: 30%;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      overflow: auto;
+    }
+
+    #videos video {
+      display: inline-block;
+      width: 32%;
+    }
+
+    #chat {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 30%;
+      border: 1px solid #0f0f0f;
+    }
+    #chat .msgIpt, #chat .fileIpt{
+      position: absolute;
+      left: 0;
+      width: 80%;
+    }
+    #chat .sendBtn, #chat .sendFileBtn {
+      position: absolute;
+      left: 80%;
+      width: 20%;
+    }
+    #chat .msgIpt,#chat .sendBtn {
+      bottom: 0;
+    }
+    #chat .fileIpt, #chat .sendFileBtn {
+      bottom: 30px;
+    }
+
+    #chat .msgs {
+      padding: 5%;
+    }
+    #chat .msgs p{
+      margin: 0.3em 0;
+    }
+    #files {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 20%;
+    }
+    #files .name {
+    }
+    #files .percent {
+      font-weight: bold;
+      text-decoration: none
+    }
+  </style>
+</head>
+<body>
+  <div >
+    <input type="file" id="fileIpt" class="fileIpt">
+    <button id="sendFileBtn" class="sendFileBtn">Send File</button>
+    <button onclick="window.location.href='http://54.164.42.224/discussion/video/';">Leave</button>
+  </div>
+  <div id="videos">
+    <video id="me" autoplay></video>
+  </div>
+  <div id="files">
+  </div>
+</body>
+{% load static %}
+<script type="text/javascript" src="{% static "js/SkyRTC-client.js"%}"></script>
+<script type="text/javascript">
+  var videos = document.getElementById("videos");
+  var sendBtn = document.getElementById("sendBtn");
+  var msgs = document.getElementById("msgs");
+  var sendFileBtn = document.getElementById("sendFileBtn");
+  var files = document.getElementById("files");
+  var rtc = SkyRTC();
+
+  /**********************************************************/
+
+  sendFileBtn.onclick = function(event){
+    //分享文件
+    rtc.shareFile("fileIpt");
+  };
+  /**********************************************************/
+
+  
+
+  //对方同意接收文件
+  rtc.on("send_file_accepted", function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = "Have Received" + file.name + "File，Waiting Send";
+
+  });
+  //对方拒绝接收文件
+  rtc.on("send_file_refused", function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = "Refused:" + file.name + "File";
+  });
+  //请求发送文件
+  rtc.on('send_file', function(sendId, socketId, file){
+    var p = document.createElement("p");
+    p.innerText = "Sending Request" + file.name + "File";
+    p.id = "sf-" + sendId;
+    files.appendChild(p);
+  });
+  //文件发送成功
+  rtc.on('sended_file', function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.parentNode.removeChild(p);
+  });
+  //发送文件碎片
+  rtc.on('send_file_chunk', function(sendId, socketId, percent, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = file.name + "File is sending: " + Math.ceil(percent) + "%";
+  });
+  //接受文件碎片
+  rtc.on('receive_file_chunk', function(sendId, socketId, fileName, percent){
+    var p = document.getElementById("rf-" + sendId);
+    p.innerText = "Receiving" + fileName + "file：" +  Math.ceil(percent) + "%";
+  });
+  //接收到文件
+  rtc.on('receive_file', function(sendId, socketId, name){
+    var p = document.getElementById("rf-" + sendId);
+    p.parentNode.removeChild(p);
+  });
+  //发送文件时出现错误
+  rtc.on('send_file_error', function(error){
+    console.log(error);
+  });
+  //接收文件时出现错误
+  rtc.on('receive_file_error', function(error){
+    console.log(error);
+  });
+  //接受到文件发送请求
+  rtc.on('receive_file_ask', function(sendId, socketId, fileName, fileSize){
+    var p;
+    if (window.confirm(socketId + "User want to send file to you" + fileName + "file，size" + fileSize + "KB, accept？")) {
+      rtc.sendFileAccept(sendId);
+      p = document.createElement("p");
+      p.innerText = "Ready to receive file" + fileName;
+      p.id = "rf-" + sendId;
+      files.appendChild(p);
+    } else {
+      rtc.sendFileRefuse(sendId);
+    }
+  });
+  //成功创建WebSocket连接
+  rtc.on("connected", function(socket) {
+    //创建本地视频流
+    rtc.createStream({
+      "video": true,
+      "audio": true
+    });
+  });
+  //创建本地视频流成功
+  rtc.on("stream_created", function(stream) {
+    document.getElementById('me').src = URL.createObjectURL(stream);
+    document.getElementById('me').play();
+  });
+  //创建本地视频流失败
+  rtc.on("stream_create_error", function() {
+    alert("create stream failed!");
+  });
+  //接收到其他用户的视频流
+  rtc.on('pc_add_stream', function(stream, socketId) {
+    var newVideo = document.createElement("video"),
+        id = "other-" + socketId;
+    newVideo.setAttribute("class", "other");
+    newVideo.setAttribute("autoplay", "autoplay");
+    newVideo.setAttribute("id", id);
+    videos.appendChild(newVideo);
+    rtc.attachStream(stream, id);
+  });
+  //删除其他用户
+  rtc.on('remove_peer', function(socketId) {
+    var video = document.getElementById('other-' + socketId);
+    if(video){
+      video.parentNode.removeChild(video);
+    }
+  });
+  //接收到文字信息
+  rtc.on('data_channel_message', function(channel, socketId, message){
+    var p = document.createElement("p");
+    p.innerText = socketId + ": " + message;
+    msgs.appendChild(p);
+  });
+  //连接WebSocket服务器
+  // rtc.connect("wss:" + window.location.href.substring(window.location.protocol.length).split('#')[0], window.location.hash.slice(1));
+  rtc.connect("wss://127.0.0.1:3000/", {{rid}});
+
+</script>
+</html>

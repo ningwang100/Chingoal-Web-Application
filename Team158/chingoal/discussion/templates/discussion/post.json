@@ -1,0 +1,4 @@
+{
+    "id": {{post.id}},
+    "html": "{% spaceless %}{{post.html|safe}}{% endspaceless %}"
+}

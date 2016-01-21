@@ -1,0 +1,43 @@
+<h4>Please Listen to following audio of <em id='learn_name'></em> and repeat</h4>
+<div class='row'>       
+    <div class='col-lg-1'></div>                     
+    <div class='col-lg-1'>
+        <br><br><br>
+        <p><i class='fa fa-play fa-lg' id='playButton'></i></p>                                
+    </div>
+    <div class='col-lg-10'>
+        <canvas id='wave_learn' style='width:400px;height:150px;background-color:#fcf8e3'></canvas>
+    </div>
+</div>
+<h5>Please record anytime when you are ready.</h5>
+<div class='row'>
+    <div class='col-lg-1'></div>
+    <div class='col-lg-1'>
+        <br><br><br>                                
+        <p><i class='fa fa-microphone fa-2x' id='startButton'></i></p>                            
+    </div>
+    <div class='col-lg-8'>
+        <canvas id='visualizer' style='width:400px;height:150px;background-color:#fcf8e3'></canvas>
+    </div>
+    <div class='col-lg-2'></div>
+</div>
+<div class='row'>
+    <div class='col-lg-1'></div>
+    <div class='col-lg-1'>
+        <br><br><br>                                
+        <p><i id='playUserAudioButton' class='fa fa-play fa-lg'></i></p>
+        <br>                            
+    </div>
+    <div class='col-lg-8'>
+        <canvas id='wave_user' style='width:400px;height:150px;background-color:#fcf8e3'></canvas>
+    </div>
+    <div class='col-lg-2'></div>                            
+</div>
+<div hidden id='hidden_username'>{{cur_user.user.username}}</div>
+<div hidden id='hidden_user_level'>{{cur_user.current_level}}</div>
+<div hidden id='hidden_user_lesson'>{{cur_user.current_lesson}}</div>
+<div hidden id='hidden_curr_level'>{{learning_material.level}}</div>
+<div hidden id='hidden_curr_lesson'>{{learning_material.lesson}}</div>
+<div hidden id='hidden_answer'>{{learning_material.answer}}</div>
+<div hidden id='hidden_curr_chapter'>{{learning_material.chapter}}</div>
+<div hidden id='hidden_text'>{{learning_material.text}}</div>

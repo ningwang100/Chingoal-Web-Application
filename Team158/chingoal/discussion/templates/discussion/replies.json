@@ -1,0 +1,9 @@
+{
+    "replies":[
+    {% for reply in replies %}
+        {
+        "id":{{reply.id}},         
+        "html":"{{reply.html|safe}}",       
+        {% if not forloop.last %},{% endif %}
+    {% endfor %}]
+}

@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+
+    {% block title-content %}
+    <title>Chingoal_DiscussionBoard</title>
+    {% endblock %}
+
+    {% block head %}
+    {% load static %}
+    <link href="{% static 'css/custom_discussion_board.css' %}" rel="stylesheet">    
+    {% endblock %}
+    {% block head-origin %}
+    {% endblock %}
+
+    {% block main-content %}
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Chingoal</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{% url 'dashboard' %}">Lessons</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{% url 'discussion_home' %}">Discussion</a>
+                    </li>
+                    {% if flag == 1 %}
+                    <li>
+                        <a href="{% url 'testcreate' %}">Create Test</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a class="page-scroll" href="{% url 'store' %}">Store</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                             <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="{% url 'viewProfile' username %}"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="{% url 'editProfile' %}"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+
+    <!-- Portfolio Grid Section -->
+    <section id="portfolio">        
+        <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-7">
+                <div class="panel panel-warning">
+                    <div class="panel-heading text-center">
+                        <div class="row">
+                        <div class="col-lg-10"><h3>{{post.title}}</h3></div>
+                            {% if post.author.username == username %}
+                            <div class="col-lg-2">                            
+                                <button class="pull-right btn btn-warning delete-btn"><a href="{% url 'delete_post' post.id %}">
+                                    <i class="fa fa-times"></i></a></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>                    
+                    <div class="panel-body bg-light-gray">{{post.text}}</div>
+                    <div hidden id="hidden_post_id">{{post.id}}</div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="panel panel-warning">
+                    <div class="panel-heading text-center">
+                        <a href="{% url 'viewProfile' post_user.user.username %}"><h3>{{post_user.user.username}}</h3></a>
+                    </div>
+                    <div class="panel-body bg-light-gray text-center">
+                        <img src="{{post_user.photo.url}}" class="img-responsive img-circle"  alt="profile_image" id="profile_img">
+                        {% for i in user_level_loop %}
+                            <i class="fa fa-star fa-2x text-muted"></i>
+                        {% endfor %}
+                        <h4>{{post_user.title}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-5"></div>
+            <div class="col-lg-2">
+                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">New Reply</button>                
+            </div>
+            <div class="col-lg-5"></div>
+        </div>
+        <div class="container" id="replyDiv">
+            <div hidden id="hidden_max_reply_id">{{max_reply_id}}</div>
+
+            {% for reply in replies %}
+            <div class="row reply_row bg-light-gray">
+                <div class="col-lg-1">
+                    <div hidden id="hidden_reply_id">{{reply.id}}</div>
+                </div>
+                <div class="col-lg-1">        
+                    <a href="{% url 'viewProfile' reply.author.username %}">
+                        <h4 class="text-center">{{reply.author.username}}</h4>
+                    </a>        
+                </div>
+                <div class="col-lg-2">
+                    <a href="{% url 'viewProfile' reply.author.username %}">
+                    <!-- <img src="{{cur_user.photo.url}}" class="img-responsive img-circle" 
+                        alt="reply_user_profile_image" id="reply_user_profile_img"> -->
+                    </a>
+                </div>
+                <div class="col-lg-7 text-center">
+                    {{reply.text}}
+                </div>
+                <div class="col-lg-1">
+                    {% if reply.author.username == cur_user.user.username %}
+                    <!-- <button class="pull-right btn btn-warning delete-reply-btn"><a href="{% url 'delete_reply' reply.id %}">
+                                <i class="fa fa-times"></i></a></button> -->
+                    <button class="pull-right btn btn-warning delete-reply-btn"><i class="fa fa-times"></i></button>                                
+                    {% endif %}
+                </div>
+            </div>
+
+            {%  endfor %}
+        </div>        
+    </section>
+
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="copyright">Copyright &copy; Your Website 2014</span>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline social-buttons">
+                    <li><a href="http://www.twitter.com"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li><a href="http://www.facebook.com"><i class="fa fa-facebook"></i></a>
+                    </li>
+                    <li><a href="http://www.linkedin.com"><i class="fa fa-linkedin"></i></a>
+                    </li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline quicklinks">
+                        <li><a href="#">Privacy Policy</a>
+                        </li>
+                        <li><a href="#">Terms of Use</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+ {% endblock %}
+
+{% block origin-script %}
+{% endblock %}
+
+{% block model-define %}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">New Reply</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <textarea class="form-control" rows="5" id="replyText" placeholder="Reply Text"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="replyBtn">Reply</button>
+                    <button type="reset" class="btn btn-warning" id="resetBtn">Reset</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script-content %}
+{% load static %}
+<script src="{% static 'js/discussion_reply.js' %}" type="text/javascript"></script>
+{% endblock %}

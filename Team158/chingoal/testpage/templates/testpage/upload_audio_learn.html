@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Audio Learn</title>
+</head>
+<body>
+    <h2>Upload Audio Learn</h2>
+    <form enctype="multipart/form-data" action="{% url 'uploadaudiolearn' %}" method="post">
+        {% for field in form.visible_fields %}        
+        <p><span>{{field.label_tag}}</span></p>
+        <p>{{field}}</p>                
+        <p>{{field.error}}</p>
+        {% endfor %}
+        <p>
+            <input type="submit" value="Submit">
+        </p>
+        {% csrf_token %}
+    </form>
+</body>
+</html>

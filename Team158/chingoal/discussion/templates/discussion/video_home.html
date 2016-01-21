@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+    {% block title-content %}
+    <title>Chatroom</title>
+    {% endblock %}
+    {% block head %}
+    {% load static %}
+    <link href="{% static "css/custom_discussion_board.css"%}" rel="stylesheet">    {% endblock %}
+    {% block head-origin %}
+    {% endblock %}
+    
+    
+{% block main-content %}
+ {% csrf_token %}
+   <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Chingoal</a>
+            </div>
+
+            <!~~ Collect the nav links, forms, and other content for toggling ~~>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{% url 'dashboard' %}">Lessons</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{% url 'discussion_home' %}">Discussion</a>
+                    </li>
+                    {% if flag == 1 %}
+                     <li>
+                           <a href="{% url 'testcreate' %}">Create Test</a>                   
+                    </li>   
+                    {% else %}
+                    
+                    <li>
+                    <a class="page-scroll" href="{% url 'store' %}">Store</a> 
+                        </li>
+                                      
+                    {% endif %}
+                    <li class="dropdown">
+                        {% if hasnewmsg == 'no' %}
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="msgbar">
+                            {% else %}
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="msgbar" style="color:red">
+                                {% endif %}
+                             <i class="fa fa-envelope fa-fw"></i><i id="newmsg">{{msgcount}}</i><i class="fa fa-caret-down"></i>
+                    </a>
+                            <ul id="msglist" class="dropdown-menu dropdown-user">
+                                {% for msg in newmsgs %}
+                                <li>{% if msg.isReply %}<a data-toggle="modal" data-target="#reply_box{{ msg.id }}">
+                                    {% else %}<a data-toggle="modal" data-target="#reply_box{{ msg.id }}" style="color:red;">
+                                        {% endif %}
+                                        <i class="fa fa-comment fa-fw"></i>{{msg.sender}}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+					</li>
+                    <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                             <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="{% url 'viewProfile' username %}"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="{% url 'editProfile' %}"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!~~ /.dropdown-user ~~>
+                    </li>   
+                </ul>
+            </div>
+            <!~~ /.navbar-collapse ~~>
+        </div>
+        <!~~ /.container-fluid ~~>
+    </nav>
+
+	<section id="portfolio" class="bg-light-gray">
+		<h2 style="margin-left:130px;">{{ username }},welcome to video rooms!</h2>
+        {% if error %}
+        <p>{{error}}</p>
+        {% endif %}
+        <form role="form" action="/discussion/videoRoom/" method="post">
+        <div style="margin-left:130px;">
+            <input type="text" name="roomname" spellcheck="false">
+            <input type="submit" value="Create a new room">
+        </div>
+        {% csrf_token %}
+        </form>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Room number</th>
+					<th>Room name</th>
+					<th>Created by</th>
+				</tr>
+			</thead>
+			<tbody id="roomlist">
+				{% for item in RoomObj %}
+					<tr>
+						<th>{{ forloop.counter }}</th>
+						<th><a href="{% url 'testVideoRoom' item.id %}">{{ item }}</a></th>
+						<th>{{item.owner}}</th>
+                        {% if item.owner == username %}
+                        <th><a href="{% url 'deleteVideoRoom' item.id %}">X</a></th>
+                        {% endif %}
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	
+<footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="copyright">Copyright &copy; Your Website 2014</span>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline social-buttons">
+                        <li><a href="http://www.twitter.com"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li><a href="http://www.facebook.com"><i class="fa fa-facebook"></i></a>
+                    </li>
+                    <li><a href="http://www.linkedin.com"><i class="fa fa-linkedin"></i></a>
+                    </li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline quicklinks">
+                        <li><a href="#">Privacy Policy</a>
+                        </li>
+                        <li><a href="#">Terms of Use</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
+{% block model-define %}
+<div id="reply_box_list">
+    {% for msg in newmsgs %}
+    <div class="modal fade" id="reply_box{{ msg.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4>From: {{msg.sender}}</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{msg.timestamp}}</p>
+                    <p>{{msg.text}}</p>
+                    <form role="form" action="{% url 'reply' msg.sender username msg.id %}" method="post">
+                        <input type="text" name="textarea1" style="width : 300px;" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Reply</button>
+                            <a href={% url 'dismiss' msg.id %} class="btn btn-primary btn-sm">Dismiss</a>
+                            {% csrf_token %}
+                            </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+ {% block script-content %}
+<script src="/../static/js/jquery-1.11.2.js" type="text/javascript"></script>
+
+{%endblock%}
